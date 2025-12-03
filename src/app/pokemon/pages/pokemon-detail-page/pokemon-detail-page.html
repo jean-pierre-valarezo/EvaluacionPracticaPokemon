@@ -1,0 +1,130 @@
+<div class="min-h-screen bg-gray-100 flex justify-center py-10">
+
+  @if (pokemonResource.value(); as pokemon) {
+
+    <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 bg-white shadow-xl rounded-xl overflow-hidden">
+
+      <!-- LEFT SECTION -->
+      <section class="bg-slate-800 text-white flex flex-col items-center justify-center p-10">
+
+        <button (click)="goBack()" class="text-sm mb-4 hover:underline self-start">
+          ← Volver
+        </button>
+
+        <img 
+          [src]="pokemon.sprites.front_default" 
+          class="w-40 h-40 mb-6 drop-shadow-xl"
+          alt="{{ pokemon.name }}"
+        >
+
+        <h1 class="text-4xl font-bold capitalize text-center">
+          {{ pokemon.name }}
+        </h1>
+
+      </section>
+
+      <!-- RIGHT SECTION -->
+      <section class="p-10 space-y-6">
+
+        <div class="flex justify-between items-center">
+          <h2 class="text-gray-500 tracking-widest text-sm font-semibold uppercase">
+            Información Básica
+          </h2>
+          <span class="text-gray-400 text-xl font-semibold">#{{ pokemon.id }}</span>
+        </div>
+
+        <!-- Types -->
+        <div class="flex gap-3">
+          @for (t of pokemon.types; track t.type.name) {
+            <span class="px-4 py-1 rounded-full bg-blue-500 text-white text-sm font-semibold shadow">
+              {{ t.type.name }}
+            </span>
+          }
+        </div>
+
+        <!-- Height & Weight -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-gray-100 rounded-xl p-4">
+            <p class="text-xs font-semibold text-gray-500 uppercase">Altura</p>
+            <p class="text-xl font-bold">{{ pokemon.height / 10 }} m</p>
+          </div>
+
+          <div class="bg-gray-100 rounded-xl p-4">
+            <p class="text-xs font-semibold text-gray-500 uppercase">Peso</p>
+            <p class="text-xl font-bold">{{ pokemon.weight / 10 }} kg</p>
+          </div>
+        </div>
+
+        <!-- Extra Info -->
+        <div class="space-y-3 text-sm">
+
+          <div class="flex justify-between">
+            <p class="text-gray-600">Experiencia Base</p>
+            <p class="font-bold">{{ pokemon.base_experience }} XP</p>
+          </div>
+
+          <div class="flex justify-between">
+            <p class="text-gray-600">Movimientos Totales</p>
+            <p class="font-bold">{{ pokemon.moves.length }}</p>
+          </div>
+
+          <div class="flex justify-between">
+            <p class="text-gray-600">Habilidad Oculta</p>
+            <p>
+              <span 
+                class="px-3 py-1 text-xs rounded-full font-semibold"
+                [ngClass]="hasHiddenAbility(pokemon.abilities) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+              >
+                {{ hasHiddenAbility(pokemon.abilities) ? 'Sí' : 'No' }}
+              </span>
+            </p>
+          </div>
+
+        </div>
+
+        <!-- STATS -->
+        <div class="mt-10">
+          <h2 class="text-gray-500 tracking-widest text-sm font-semibold uppercase mb-4">
+            Estadísticas
+          </h2>
+
+          <div class="space-y-4">
+
+            @for (s of pokemon.stats; track s.stat.name) {
+
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="capitalize text-sm text-gray-700">
+                    {{ s.stat.name }}
+                  </span>
+                  <span class="text-sm font-semibold">
+                    {{ s.base_stat }}
+                  </span>
+                </div>
+
+                <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div
+                    class="h-3 rounded-full transition-all duration-700"
+                    [style.width.%]="(s.base_stat / 180) * 100"
+                    [ngClass]="{
+                      'bg-green-500': s.base_stat >= 100,
+                      'bg-yellow-500': s.base_stat >= 60 && s.base_stat < 100,
+                      'bg-red-500': s.base_stat < 60
+                    }"
+                  ></div>
+                </div>
+              </div>
+
+            }
+
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  } @else {
+    <p class="text-center mt-20 text-gray-500">Cargando…</p>
+  }
+</div>
